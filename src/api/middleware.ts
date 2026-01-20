@@ -2,12 +2,12 @@ import { Request, Response, NextFunction} from "express";
 import { config } from '../config.js';
 import { NotFoundError } from "./errors/notFound.js";
 import { ForbiddenError } from "./errors/forbidden.js";
-import { UnauthorizedError } from "./errors/unautherized.js";
+import { UnauthorizedError } from "./errors/unauthorized.js";
 import { BadRequestError } from "./errors/badReq.js";
 import { respondWithError } from "./json.js";
 
 export function middlewareMetricsInc(req: Request, res: Response, next: NextFunction) {
-    config.fileServerHits += 1
+    config.api.fileServerHits += 1
     next()
 }
 
