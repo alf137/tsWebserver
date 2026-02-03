@@ -16,7 +16,15 @@ export async function getChirps() {
     return orderedChirps
 }
 
-export async function getSingleChirp(id: string): Promise<Chirp>{
-    const chirp: Chirp[] = await db.select().from(chirps).where(eq(chirps.id, id))
-    return chirp[0]
+export async function getSingleChirp(id: string) {
+  const rows = await db.select().from(chirps).where(eq(chirps.id, id));
+  if (rows.length === 0) {
+    return;
+  }
+  return rows[0];
 }
+
+export async function deleteChirpById(chirpId: string){
+    await db.delete(chirps).where(eq(chirps.id ,chirpId))
+}
+
