@@ -9,7 +9,6 @@ import { handlerChirpsCreate, handlerChirpsGet, handlerChirpsRetrieve, handlerDe
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/login.js";
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerUpgradeUserRed } from "./api/polka/webhooks.js";
-import { readSync } from "node:fs";
 
 
 const app = express();

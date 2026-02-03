@@ -1,7 +1,7 @@
-import { createChirp, deleteChirpById, getChirps, getSingleChirp } from "../db/queries/chirps.js";
+import { createChirp, deleteChirpById, getChirps, getChirpsByAuthor, getSingleChirp } from "../db/queries/chirps.js";
 import { BadRequestError } from "./errors/badReq.js";
 import type { Request, Response } from "express";
-import { respondWithError, respondWithJSON } from "./json.js";
+import { respondWithJSON } from "./json.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 import { NotFoundError } from "./errors/notFound.js";
@@ -52,9 +52,27 @@ function getCleanedBody(body: string, badWords: string[]) {
   return cleaned;
 }
 
-export async function handlerChirpsRetrieve(_: Request, res: Response) {
-  const chirps = await getChirps();
-  respondWithJSON(res, 200, chirps);
+export async function handlerChirpsRetrieve(req: Request, res: Response) {
+  let authorId = ""
+  let sort: boolean = true
+  let authorIdQuery = req.query.authorId
+  let sortingQuery = req.query.sort
+  if (sortingQuery === "desc"){
+    sort = false
+  } else {
+    sort = true
+  }
+  if (typeof authorIdQuery === "string") {
+    authorId = authorIdQuery;
+  }
+  if (!authorId) {
+    const chirps = await getChirps(sort);
+    respondWithJSON(res, 200, chirps);
+    return
+  }
+  const chirps = await getChirpsByAuthor(authorId)
+  respondWithJSON(res, 200, chirps)
+  return
 }
 
 export async function handlerChirpsGet(req: Request, res: Response) {
