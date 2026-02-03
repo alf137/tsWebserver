@@ -2,6 +2,9 @@ import type { Request, Response } from "express";
 import { respondWithJSON } from "../json.js";
 import { getUserById, upgradeUserToRed } from "../../db/queries/users.js";
 import { NotFoundError } from "../errors/notFound.js";
+import { getAPIKey } from "../../auth.js";
+import { config } from "../../config.js";
+import { UnauthorizedError } from "../errors/unauthorized.js";
 
 
 export async function handlerUpgradeUserRed(req: Request, res: Response){
@@ -11,7 +14,10 @@ export async function handlerUpgradeUserRed(req: Request, res: Response){
             userId: string;
         };
     };
-
+    const apiKey = getAPIKey(req)
+    if (apiKey !== config.api.polkaKey){
+        throw new UnauthorizedError("Key does not fit")
+    } 
     const params: parameters = req.body
     const userId = params.data.userId
     if (params.event !== "user.upgraded"){
